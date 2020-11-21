@@ -7,7 +7,7 @@ object HelloWorld extends App {
 ```
 
 # History and Current Status
-Scala (_scalable language_) was first released publicly in 2004 with Martin Odersky behind its design. It is currently gaining popularity, however its steep learning curve is the biggest hurdle for programmers to adopt it.
+Scala (_scalable language_) was first released publicly in 2004 with Martin Odersky behind its design. It is currently gaining popularity, however its steep learning curve is the biggest hurdle for programmers looking to adopt it.
 
 # Paradigm
 Scala is both object oriented and functional.
@@ -24,7 +24,25 @@ to be the same as
 Functions are also objects so that they may be stored in variables, passed as arguments, and returned from other functions.  Scala also supports other powerful features common to functional languages such as pattern matching, currying, lazy evaluation, and lambda expressions (of course).  Scala gives the programmer the choice of how they write their programs.  It is entirely possible to write Scala programs to be fully functional.
 
 # Typing System
-Scala is statically typed. Scala supports type inference. Programmers may declare new types similar to Java.  Functions are first class objects.
+Scala is statically typed. 
+Scala supports type inference. 
+```scala
+val x = funcThatReturnsDouble
+```
+The type of x is inferred here to be `Double`
+
+Programmers may declare new types similar to Java. Here is the whole definition for a wrapper class that encapsulates an ordered sequence of numbers:
+```scala
+  class ColumnVector(val d: IndexedSeq[Double])
+```
+This type may now be used to create a matrix with `IndexedSeq[ColumnVector]` rather than `IndexedSeq[IndexedSeq[Double]]`
+
+Functions are first class objects:
+```scala
+  def add(x: Double, y: Double) = x+y
+  println(List[Double](1,2,3).reduce(add))
+  // prints 6.0
+```
 
 # Control Structures
 ### if/else
@@ -62,11 +80,10 @@ def stringOfType(a: Any) = a match {
 }
 ```
 The above example shows that you can match based on type and that there is a simple syntax for having two case statements share the same line using a pipe. It also shows that __match__ expressions return values -- we have defined a method to return whatever the match expression evaluates to.
-### Pattern Matching and Case Classes
 
 
 # Semantics
-Statically scoped. Garbage collector
+Scala is statically scoped and uses a garbage collector.
 ## val and var
 In Scala, there are two different variable declarations:
 ```scala
@@ -107,8 +124,13 @@ Now take a look at the equivalent Scala class:
     def centroid: Seq[Double] = _centroid
   }
 ```
+It's much more concise and much more readable.
 ## Regularity
-Scala fully embraces its multiparadigm nature. As a result, there are a many ways to do everything.
+Scala is highly regular.
+- Everything in Scala is an object
+- Everything in Scala evaluates to something
+These two points allow for everything in Scala to be treated like a value, from the variables to the if-statements to the for-loops and so on.
+
 ## Security
 One specific security boost I appreciate in Scala over Java is the mandatory use of an **override** keyword:
 ```scala
@@ -120,5 +142,5 @@ Enforcing an inherited method override to be explicit preempts any accidental ov
 
 Aside from tidbits like that, Scala gives you the tools to write fully functional programs in which everything is immutable -- just like in Haskell.  While you are fully free to write purely object oriented Scala code with side effects galore, you absolutely do not have to.  You may have noticed from some of the examples above; everything in Scala is an expression.  In Java, we get things done writing _statements_ because we are relying on their side effects to make our program work.  In Scala, you can write code in the same way, but you also have the option to fully rely on expressions instead -- as if you were writing Haskell.
 ## Extensibility
-Scala supports operator overloading.
+Scala supports operator overloading, meaning you can redefine what the `+` or `>=` operators do when defining new types.  This is because operators like those are just pre-defined methods for objects that can be added or compared.
 

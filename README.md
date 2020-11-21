@@ -79,7 +79,34 @@ The difference between the two is that __val__ indicates an immutable variable t
 
 ## Efficiency
 Scala translates to bytecode for the JVM.  The upgrade it has over Java, however, is that Scala code tends to be much more concise which enhances maintainability.
+Consider the following Java class that could be used to represent a cluster of data points that also calculates the centroid of those data points:
+```java
+class Cluster {
+	private final Double[] centroid;
 
+	public Cluster(Double[][] data) {
+		centroid = new Double[data[0].length];
+
+		for (int x = 0; x < centroid.length; x++) {
+			double sum = 0; int d = 0;
+			for (d = 0; d < data.length; d++)
+				sum += data[d][x];
+			centroid[x] = sum / d;
+		}
+	}
+
+	public Double[] centroid() {
+		return centroid.clone();
+	}
+}
+```
+Now take a look at the equivalent Scala class:
+```scala
+  class Cluster(private val data: Seq[Seq[Double]]) {
+    private val _centroid = for (component <- data.transpose) yield component.sum/component.size
+    def centroid: Seq[Double] = _centroid
+  }
+```
 ## Regularity
 Scala fully embraces its multiparadigm nature. As a result, there are a many ways to do everything.
 ## Security

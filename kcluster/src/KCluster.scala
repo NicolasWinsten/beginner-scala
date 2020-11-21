@@ -19,7 +19,7 @@ object KCluster extends App {
   val n = fileIt.next().toInt // number of data points to group
 
   if (k > n) {
-    println("The number of clusters must be greater than the size of the chosen data set")
+    println("The number of clusters can't be greater than the size of the chosen data set")
     System.exit(1)
   }
 
@@ -60,7 +60,7 @@ object KCluster extends App {
    * @param v2 Point representing a position vector
    * @return Euclidean distance between <var>v1</var> and <var>v2</var>
    */
-  def dist(v1: Point, v2: Point) = math sqrt v1.v.zipAll(v2.v, 0.0, 0.0).map {
+  private def dist(v1: Point, v2: Point) = math sqrt v1.v.zipAll(v2.v, 0.0, 0.0).map {
     case (x1, x2) => math.pow(x1 - x2, 2)
   }.sum
 
@@ -71,7 +71,7 @@ object KCluster extends App {
    * @param vs Sequence of vectors
    * @return centroid vector for <var>vs</var>
    */
-  def centroid(vs: Iterable[Point]) =
+  private def centroid(vs: Iterable[Point]) =
     new Point((for (component <- vs.map(p => p.v).transpose) yield component.sum / component.size).toSeq)
 
   /**
@@ -79,7 +79,7 @@ object KCluster extends App {
    * @param v Sequence of Doubles representing a vector point in space
    * @return the label of the neighbor vector that <var>v</var> is closest to
    */
-  def chooseNeighbor(ns: Seq[Point], v: Point) = ns.map(n => dist(n, v)).zipWithIndex.min._2
+  private def chooseNeighbor(ns: Seq[Point], v: Point) = ns.map(n => dist(n, v)).zipWithIndex.min._2
 
 
   /**
@@ -90,7 +90,7 @@ object KCluster extends App {
    * @param data data set
    * @return the centroid for each final cluster and the number of iterations it took to find
    */
-  def group(k: Int, data: Iterable[Point]): (Seq[Point], Int) = {
+  private def group(k: Int, data: Iterable[Point]): (Seq[Point], Int) = {
     // initialize clusters to the first k from the data set
     var prevCentroids = data.slice(0, k).toArray
     var loops = 0

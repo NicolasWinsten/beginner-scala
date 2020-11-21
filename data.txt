@@ -4,7 +4,7 @@
 # The rest of this file should contain a data point on each line with however many components separated by a space.
 # This example has data points of only two components.
 # PRECONDITION: Every data point in this file should have the same number of components
-6
+2
 5
 3 4
 3 3

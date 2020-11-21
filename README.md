@@ -129,6 +129,7 @@ It's much more concise and much more readable.
 Scala is highly regular.
 - Everything in Scala is an object
 - Everything in Scala evaluates to something
+
 These two points allow for everything in Scala to be treated like a value, from the variables to the if-statements to the for-loops and so on.
 
 ## Security

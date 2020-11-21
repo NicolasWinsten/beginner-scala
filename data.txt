@@ -1,5 +1,10 @@
-# Example file
-2
+# Example file for KCluster input. The first line holds the number of clusters we want to group our data into.
+# The second line holds the number of data points from this set we want to use
+# (could be used to split this data set into a training set and test set)
+# The rest of this file should contain a data point on each line with however many components separated by a space.
+# This example has data points of only two components.
+# PRECONDITION: Every data point in this file should have the same number of components
+6
 5
 3 4
 3 3

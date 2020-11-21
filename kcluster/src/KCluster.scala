@@ -1,6 +1,15 @@
+/**
+This file is my first scala program.  I made it as part of a final project for CSC 372 Comparative Programming Languages.
+See the whole project here: <a href="https://github.com/NicolasWinsten/beginner-scala">Learning Scala</a>
+It performs the k-means clustering algorithm on a given data set.
+<br><br>
+ Usage: scala KCluster [filename]
+ <br><br>
+ An example of the data set file format is given at the link to the full project
+ */
 object KCluster extends App {
-  if (args.length != 1) {
-    println("Provide a file name to read data from")
+  if (args.length < 1) {
+    println("Must provide one arg: filename of data set")
     System.exit(1)
   }
 
@@ -9,44 +18,107 @@ object KCluster extends App {
   val k = fileIt.next().toInt // number of clusters to create
   val n = fileIt.next().toInt // number of data points to group
 
-  // TODO handle error when k > n
-
-  /**
-   * data points to vectors
-   */
-  val data = for (line <- fileIt.slice(0, n+1)) yield {
-    val p = line.split(" ").map(_.toDouble)
-    p.toVector
+  if (k > n) {
+    println("The number of clusters must be greater than the size of the chosen data set")
+    System.exit(1)
   }
 
-  // TODO get final centroids after algorithm, along with number of loops
-  data.foreach(println)
+  /**
+   * read data points from given file
+   */
+  val data: Seq[Point] = (for (line <- fileIt.slice(0, n)) yield {
+    new Point(line.split(" ").map(_.toDouble))
+  }).toSeq
+
+  val (centroids, iterations) = group(k, data)
+  println("The final centroid locations are:")
+  println()
+  for ((c, i) <- centroids.zipWithIndex)
+    println(s"u(${i+1}) = $c")
+  println()
+  println(s"$iterations iterations were required.")
+
   file.close()
 
   /**
-   * @param v1 sequence of numbers representing a position vertex in space
-   * @param v2 sequence of numbers representing a position vertex in space
-   * @return Euclidean distance between <var>v1</var> and <var>v2</var>
+   * Wrapper class for a Sequence of Doubles representing a positional vector
+   * @param d Sequence of Doubles
    */
-  def dist(v1: Seq[Double], v2: Seq[Double]) = math sqrt v1.zipAll(v2, 0.0, 0.0).map {
-    case (x1, x2) => math.pow(x1 - x2, 2)
-  }.sum
+  class Point(private val d: Seq[Double]) {
+    def v: IndexedSeq[Double] = d.toIndexedSeq
 
-  class Cluster(private val data: Seq[Seq[Double]]) {
-    // compute center of this cluster by calculating the average vector
-    private val _centroid = for (component <- data.transpose) yield component.sum/component.size
-    def centroid: Seq[Double] = _centroid
+    override def equals(obj: Any): Boolean = obj match {
+      case o: Point => this.v == o.v
+      case _ => false
+    }
+
+    override def toString: String = d.mkString("(", ", ", ")")
   }
 
   /**
-   * @param clusters Sequence of clusters labelled C1, C2, ...
-   * @param v Sequence of Doubles representing a point in space
-   * @return the label of the Cluster that <var>v</var> belongs to
+   * @param v1 Point representing a position vector
+   * @param v2 Point representing a position vector
+   * @return Euclidean distance between <var>v1</var> and <var>v2</var>
    */
-  def chooseCluster(clusters: Seq[Cluster], v: Seq[Double]) =
-    clusters.map(c => dist( c.centroid, v)).zipWithIndex.min._2
+  def dist(v1: Point, v2: Point) = math sqrt v1.v.zipAll(v2.v, 0.0, 0.0).map {
+    case (x1, x2) => math.pow(x1 - x2, 2)
+  }.sum
 
-//  def group(k: Int, data: Seq[Seq[Double]])
 
-//  private def _group(clusters: Seq[Cluster], data: Seq[Seq[Double]])
+  /**
+   * Computes the average vector from the given sequence of vectors.<br>
+   * PRECONDITION: All vectors must be equal in number of components.
+   * @param vs Sequence of vectors
+   * @return centroid vector for <var>vs</var>
+   */
+  def centroid(vs: Iterable[Point]) =
+    new Point((for (component <- vs.map(p => p.v).transpose) yield component.sum / component.size).toSeq)
+
+  /**
+   * @param ns Sequence of vectors labelled C1, C2, ...
+   * @param v Sequence of Doubles representing a vector point in space
+   * @return the label of the neighbor vector that <var>v</var> is closest to
+   */
+  def chooseNeighbor(ns: Seq[Point], v: Point) = ns.map(n => dist(n, v)).zipWithIndex.min._2
+
+
+  /**
+   * Algorithm for KClustering.<br>
+   * Continues sorting the given data points into clusters until a stable
+   * organization is found.
+   * @param k number of clusters
+   * @param data data set
+   * @return the centroid for each final cluster and the number of iterations it took to find
+   */
+  def group(k: Int, data: Iterable[Point]): (Seq[Point], Int) = {
+    // initialize clusters to the first k from the data set
+    var prevCentroids = data.slice(0, k).toArray
+    var loops = 0
+    while(true) {
+      loops += 1
+      val newCentroids = _group(prevCentroids, data)
+      if (newCentroids sameElements prevCentroids) return (newCentroids, loops)
+      else prevCentroids = newCentroids
+    }
+    (Nil, -1) // won't happen
+  }
+
+  /**
+   * This auxiliary function updates the centroids for <var>group()</var>
+   * @param cs Sequence of centroid vectors labelled c1, c2, c3, ...
+   * @param vs Sequence of vectors
+   * @return new centroids
+   */
+  private def _group(cs: Seq[Point], vs: Iterable[Point]) = {
+    val clusters = new Array[List[Point]](cs.length)
+    // initialize array where each index i will hold the vectors in cluster i
+    for (i <- cs.indices)  clusters(i) = List[Point]()
+
+    for (v <- vs) { // organize vectors into our cluster array
+      val c = chooseNeighbor(cs, v)
+      clusters(c) = v +: clusters(c)
+    }
+    // return the centroids of the clusters
+    for (c <- clusters) yield centroid(c)
+  }
 }

@@ -5,7 +5,7 @@ object HelloWorld extends App {
   println("Hello, world")
 }
 ```
-[skip to my final project](https://github.com/NicolasWinsten/beginner-scala#Final_Project)
+[skip to my final project](https://github.com/NicolasWinsten/beginner-scala#Final-Project)
 # History and Current Status
 Scala (_scalable language_) was first released publicly in 2004 with Martin Odersky behind its design. It is currently gaining popularity, however its steep learning curve is the biggest hurdle for programmers looking to adopt it.
 

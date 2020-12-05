@@ -146,7 +146,7 @@ Aside from tidbits like that, Scala gives you the tools to write fully functiona
 Scala supports operator overloading, meaning you can redefine what the `+` or `>=` operators do when defining new types.  This is because operators like those are just pre-defined methods for objects that can be added or compared.
 
 # Final Project
-For a more interesting project using Scala, I decided to make an graph visualizer. It allows a user to interactively traverse whatever graph data they want!  Below are screenshots of what it can do hooked up to Wikipedia:
-![Kevin Bacon](https://github.com/NicolasWinsten/web-viz/KevinBaconViz.PNG)
-![Spider web](https://github.com/NicolasWinsten/web-viz/SpiderWebViz.PNG)
+For a more interesting project using Scala, I decided to make a graph visualizer. It allows a user to interactively traverse whatever graph data they want!  Below are screenshots of what it can do hooked up to Wikipedia:
+![Kevin Bacon](https://github.com/NicolasWinsten/web-viz/blob/master/KevinBaconViz.PNG)
+![Spider web](https://github.com/NicolasWinsten/web-viz/blob/master/SpiderWebViz.PNG)
 If you want to see the full project, or if you want to play around with the Wikipedia graph, go [here](https://github.com/NicolasWinsten/web-viz).
